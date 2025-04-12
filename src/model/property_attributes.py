@@ -26,22 +26,26 @@ class TaxRecord():
 
 
 class House(Property):
-    def __init__(self, num_bedrooms: int, num_bathrooms: int, has_garden: bool):
+    def __init__(self, property_id: int, address: str, size: float, facilities: list, price: float, history: list, is_occupied: bool, num_bedrooms: int, num_bathrooms: int, has_garden: bool):
+        super().__init__(property_id, address, size, facilities, price, history, is_occupied)
         self.num_bedrooms = num_bedrooms
         self.num_bathrooms = num_bathrooms
         self.has_garden = has_garden
 
 class Apartment(Property):
-    def __init__(self, floor_number: int, has_elevator: bool, has_balcon: bool):
+    def __init__(self, property_id: int, address: str, size: float, facilities: list, price: float, history: list, is_occupied: bool, floor_number: int, has_elevator: bool, has_balcony: bool):
+        super().__init__(property_id, address, size, facilities, price, history, is_occupied)
         self.floor_number = floor_number
         self.has_elevator = has_elevator
-        self.has_balcon = has_balcon
+        self.has_balcony = has_balcony
 
 
 
 p1 = Property(1, 'tam 2', 12.54, ['bath', 'shower', 'wi-fi', 'king-size bed'], 1000.49, ['Mia', 'Max', 'Andriy'], True)
 u1 = UtilityProvider("up1", "EVN", "Electricity and Gas", 5)
 tr1 = TaxRecord(1, p1, 2000, 150.13)
+
+h1 = House(3, 'doroshenka', 100, ['bath', 'shower', 'wi-fi', 'cleaning-service'], 15000, ['Maxon'], True, 2, 3, False)
 
 u1.calculate_utility_cost(p1)
 tr1.calculate_tax()

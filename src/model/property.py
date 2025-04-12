@@ -1,7 +1,7 @@
 import datetime
 
 class Property():
-    def __init__(self, property_id, address, size, facilities, price, history, is_occupied):
+    def __init__(self, property_id: int, address: str, size: float, facilities: list, price: float, history: list, is_occupied: bool):
         self.property_id = property_id
         self.address = address
         self.size = size
@@ -22,7 +22,7 @@ class Property():
 
 
 class Contract():
-    def __init__(self, contract_id, owner, property, start_date, end_date, commission_rate):
+    def __init__(self, contract_id: int, owner: Owner, property: Property, start_date: date, end_date: date, commission_rate: float):
         self.contract_id = contract_id
         self.owner = owner
         self.property = property
