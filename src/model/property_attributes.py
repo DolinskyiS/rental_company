@@ -7,19 +7,21 @@ class UtilityProvider:
         self.service_type = service_type
         self.monthly_cost = monthly_cost
 
-    def calculate_utility_cost(self, property):
-       print(f"Your monthly utility cost for property is: {property.size * self.monthly_cost}")
+    def calculate_utility_cost(self, prop):
+        print(f"Your monthly utility cost for property is: {(prop.size * self.monthly_cost):.2f}")
+        return round(prop.size * self.monthly_cost, 2)
 
 
-class TaxRecord():
-    def __init__(self, tax_id: int, property: Property, year: int, amount: float):
+class TaxRecord:
+    def __init__(self, tax_id: int, prop: Property, year: int, amount: float):
         self.tax_id = tax_id
-        self.property = property
+        self.property = prop
         self.year = year
         self.amount = amount
 
     def calculate_tax(self):
-        print(f"Your monthly tax cost for property is: {self.property.size * self.amount}")
+        print(f"Your monthly tax cost for property is: {(self.property.size * self.amount):.2f}")
+        return round(self.property.size * self.amount, 2)
 
 
 class House(Property):
@@ -53,8 +55,8 @@ h1 = House(
     price=1500
 )
 
-u1.calculate_utility_cost(p1)
-tr1.calculate_tax()
+print(u1.calculate_utility_cost(p1))
+print(tr1.calculate_tax())
 
 
 
