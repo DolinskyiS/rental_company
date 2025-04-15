@@ -1,29 +1,59 @@
-from property import Property, Owner
-from datetime import *
+from property import Property, Owner, p1
+from datetime import date
 
 class Resident:
-    def __init_(self, resident_id: int, name: str, contact_info: str):
+    def __init__(self, resident_id: int, name: str, contact_info: str):
         self.resident_id = resident_id
         self.name = name
         self.contact_info = contact_info
-        self.lease_agreements = list["LeaseAgreement"] = []
+        self.lease_agreements: list["LeaseAgreement"] = []
 
     def get_active_lease(self) -> "LeaseAgreement | None":
         for lease in self.lease_agreements:
             if lease.is_active:
+                print(f"Here is your active lease: {lease.lease_id}")
                 return lease
+        print("No active lease")
+        return None
+
+
+    def pay_rent(self, amount: float):
+        required_payment_lease = self.get_active_lease()
+
+
+
+
+class RentalApplication:
+    def __init__(self, application_id: int, applicant: Resident, property: Property):
+        self.application_id = application_id
+        self.applicant = applicant
+        self.property = property
+        self.status = str
+
+    def approve(self):
+       pass
 
 
 class LeaseAgreement:
-    def __init__(self, lease_id: int, property: Property, resident: Resident, start_date: date, end_date: date, rent_amount: float, security_deposit: float):
+    def __init__(self, lease_id: int, property: Property, resident: Resident, start_date: date, end_date: date):
         self.lease_id = lease_id
         self.property = property
         self.resident = resident
         self.start_date = start_date
         self.end_date = end_date
-        self.rent_amount = rent_amount
-        self.security_deposit = security_deposit
+        self.rent_amount = property.price
+        self.security_deposit = property.price * 3
         self._relations_setup()
+
+    def __str__(self):
+        return (f"Lease ID: {self.lease_id}, "
+                f"Property: {self.property.property_id}, "
+                f"Resident: {self.resident.resident_id}, "
+                f"Start: {self.start_date}, End: {self.end_date}, "
+                f"Rent Amount: {self.rent_amount}, "
+                f"Security Deposit: {self.security_deposit:.2f}"
+                )
+
 
     def _relations_setup(self):
         self.resident.lease_agreements.append(self) #appending lease agreement auto
@@ -35,8 +65,31 @@ class LeaseAgreement:
         return self.start_date <= today <= self.end_date
 
     def renew_lease(self, preferred_end_date):
+        pass
 
 
+class TransactionHistory:
+    def __init__(self):
+        self.transactions: list["Payment"] = []
 
 
+    def get_total_payments(self):
+        pass
 
+
+class Payment:
+    def __init__(self, payment_id: int, lease: LeaseAgreement):
+        self.payment_id = payment_id
+        self.lease = lease
+        self.amount = lease.rent_amount
+        self.date = date.today()
+        self.status = str
+
+    # def is_late(self):
+    #     if self.date
+
+
+r1 = Resident(1, "Andriy", "phone_number: +431231231232")
+
+la1 = LeaseAgreement(1, p1, r1, date(2025,4,1), date(2026,4,1) )
+print(r1.get_active_lease())

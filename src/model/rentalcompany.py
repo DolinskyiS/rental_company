@@ -1,5 +1,5 @@
 from property import Property, Owner
-import datetime
+from datetime import date
 from property_attributes import h1
 
 class RentalCompany:
@@ -39,9 +39,10 @@ class RentalCompany:
 ## The Rental Company
 rc = RentalCompany('SoldYaHome')
 
-
+import datetime
 class Contract:
-    def __init__(self, contract_id: int, owner: Owner, prop: Property, start_date: str, end_date: str, commission_rate: float):
+
+    def __init__(self, contract_id: int, owner: Owner, prop: Property, start_date: date, end_date: date, commission_rate: float):
         self.contract_id = contract_id
         self.owner = owner
         self.property = prop
@@ -65,7 +66,7 @@ class Contract:
         self.owner.add_property(self.property) # adding property to owner's property list
         self.property.history.append(self) # updating property history
         # self.property.is_occupied = True # updating occupation status
-        if self.start_date <= str(datetime.date.today()) <= self.end_date:
+        if self.start_date <= datetime.date.today() <= self.end_date:
             self.property.is_occupied = True
         else:
             self.property.is_occupied = False
@@ -73,7 +74,7 @@ class Contract:
 
 
     def is_active(self):
-        if self.start_date <= str(datetime.date.today()) <= self.end_date:
+        if self.start_date <= datetime.date.today() <= self.end_date:
             print("the contract is active")
             return True
         else:
@@ -87,12 +88,9 @@ class Contract:
         elif self.commission_rate > 0:
             end = self.end_date
             start = self.start_date
-            from datetime import datetime
 
-            start_date = datetime.strptime(start, "%Y-%m-%d")
-            end_date = datetime.strptime(end, "%Y-%m-%d")
 
-            all_months = (end_date.year - start_date.year) * 12 + (end_date.month - start_date.month)
+            all_months = (end.year - start.year) * 12 + (end.month - start.month)
             final_price = round((self.property.price * int(all_months)) / 100 * self.commission_rate, 2)
             print(f"Your payment is: {final_price}")
             return final_price
@@ -142,7 +140,7 @@ o1 = Owner(1, 'Mister Business', '@millionaire')
 p1.get_status()
 p1.calculate_cost(3)
 
-c1 = Contract(1, o1, p1, "2025-02-19", "2025-04-19", 5)
+c1 = Contract(1, o1, p1, date(2025, 4, 1), date(2025, 4, 19), 5)
 
 # print(datetime.date.today())
 print(c1.is_active())
