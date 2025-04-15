@@ -1,11 +1,13 @@
 # from property_attributes import UtilityProvider
+import uuid
 
 class Owner:
-    def __init__(self, owner_id: int, name: str, contact_info: str):
-        self.owner_id = owner_id
+    def __init__(self, name: str, contact_info: str):
+        self.owner_id = int(uuid.uuid4())
         self.name = name
         self.contact_info = contact_info
         self.properties_owned = []
+
 
     def get_properties(self):
         if len(self.properties_owned) > 0:
@@ -35,8 +37,8 @@ class Owner:
 
 
 class Property:
-    def __init__(self, property_id: int, address: str, size: float, facilities: list, price: float):
-        self.property_id = property_id
+    def __init__(self, address: str, size: float, facilities: list, price: float):
+        self.property_id = int(uuid.uuid4())
         self.address = address
         self.size = size
         self.facilities = facilities
@@ -74,12 +76,12 @@ class Property:
 
 
 # testing
-p1 = Property(1, 'London', 12.54, ['bath', 'shower', 'wi-fi', 'king-size bed'], 1000.49)
-p2 = Property(2, 'New York', 46.31, ['shower', 'wi-fi', 'queen-size bed', "pc"], 1400)
-o1 = Owner(1, 'Mister Business', '@millionaire')
+p1 = Property('London', 12.54, ['bath', 'shower', 'wi-fi', 'king-size bed'], 1000.49)
+# p2 = Property('New York', 46.31, ['shower', 'wi-fi', 'queen-size bed', "pc"], 1400)
+# o1 = Owner('Mister Business', '@millionaire')
 
-p1.get_status()
-p1.calculate_cost(3)
+# p1.get_status()
+# p1.calculate_cost(3)
 
 # c1 = Contract(1, o1, p1, "2025-02-19", "2025-04-19", 5)
 
@@ -89,10 +91,14 @@ p1.calculate_cost(3)
 # c1.get_owner()
 
 
-o1.get_properties()
-o1.add_property(p1)
-o1.get_properties()
-o1.add_property(p2)
-o1.get_properties()
-o1.remove_property(p1)
-o1.get_properties()
+# o1.get_properties()
+# o1.add_property(p1)
+# o1.get_properties()
+# o1.add_property(p2)
+# o1.get_properties()
+# o1.remove_property(p1)
+# o1.get_properties()
+
+# print(o1.owner_id)
+# print(p1.property_id)
+# print(p2.property_id)

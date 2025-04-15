@@ -1,9 +1,10 @@
-from property import Property, Owner, p1
+from src.model.property import Property
+import uuid
 from datetime import date
 
 class Resident:
-    def __init__(self, resident_id: int, name: str, contact_info: str):
-        self.resident_id = resident_id
+    def __init__(self, name: str, contact_info: str):
+        self.resident_id = int(uuid.uuid4())
         self.name = name
         self.contact_info = contact_info
         self.lease_agreements: list["LeaseAgreement"] = []
@@ -24,8 +25,8 @@ class Resident:
 
 
 class RentalApplication:
-    def __init__(self, application_id: int, applicant: Resident, property: Property):
-        self.application_id = application_id
+    def __init__(self, applicant: Resident, property: Property):
+        self.application_id = int(uuid.uuid4())
         self.applicant = applicant
         self.property = property
         self.status = str
@@ -35,8 +36,8 @@ class RentalApplication:
 
 
 class LeaseAgreement:
-    def __init__(self, lease_id: int, property: Property, resident: Resident, start_date: date, end_date: date):
-        self.lease_id = lease_id
+    def __init__(self, property: Property, resident: Resident, start_date: date, end_date: date):
+        self.lease_id = int(uuid.uuid4())
         self.property = property
         self.resident = resident
         self.start_date = start_date
@@ -78,8 +79,8 @@ class TransactionHistory:
 
 
 class Payment:
-    def __init__(self, payment_id: int, lease: LeaseAgreement):
-        self.payment_id = payment_id
+    def __init__(self, lease: LeaseAgreement):
+        self.payment_id = int(uuid.uuid4())
         self.lease = lease
         self.amount = lease.rent_amount
         self.date = date.today()
@@ -89,7 +90,19 @@ class Payment:
     #     if self.date
 
 
-r1 = Resident(1, "Andriy", "phone_number: +431231231232")
+class LatePayment(Payment):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.penalty_fee = round(self.amount * 0.2, 2)
 
-la1 = LeaseAgreement(1, p1, r1, date(2025,4,1), date(2026,4,1) )
-print(r1.get_active_lease())
+    def calculate_penalty(self):
+        print(f"If you will be late on your payment, your fee would sum up to: {self.penalty_fee}")
+        return self.penalty_fee
+
+
+
+
+r1 = Resident("Andriy", "phone_number: +431231231232")
+#
+# la1 = LeaseAgreement(1, p1, r1, date(2025,4,1), date(2026,4,1) )
+# print(r1.get_active_lease())

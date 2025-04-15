@@ -1,6 +1,6 @@
-from property import Property, Owner
+from src.model.property import Property, Owner
+import uuid
 from datetime import date
-from property_attributes import h1
 
 class RentalCompany:
     def __init__(self, company_name: str):
@@ -42,8 +42,8 @@ rc = RentalCompany('SoldYaHome')
 import datetime
 class Contract:
 
-    def __init__(self, contract_id: int, owner: Owner, prop: Property, start_date: date, end_date: date, commission_rate: float):
-        self.contract_id = contract_id
+    def __init__(self, owner: Owner, prop: Property, start_date: date, end_date: date, commission_rate: float):
+        self.contract_id = uuid.uuid4()
         self.owner = owner
         self.property = prop
         self.start_date = start_date
@@ -133,32 +133,32 @@ class RentalAnalytics:
 
 # testing
 # property.py testing
-p1 = Property(1, 'London', 12.54, ['bath', 'shower', 'wi-fi', 'king-size bed'], 1000.49)
-p2 = Property(2, 'New York', 46.31, ['shower', 'wi-fi', 'queen-size bed', "pc"], 1400)
-o1 = Owner(1, 'Mister Business', '@millionaire')
-
-p1.get_status()
-p1.calculate_cost(3)
-
-c1 = Contract(1, o1, p1, date(2025, 4, 1), date(2025, 4, 19), 5)
-
-# print(datetime.date.today())
-print(c1.is_active())
-c1.calculate_commission()
-c1.get_owner()
-
-# rc testing
-
-rc.add_property(p1)
-rc.add_property(h1)
-
-
-# rc.remove_property(p1)
-
-ra = RentalAnalytics()
-rc.get_properties()
-ra.vacancy_rate()
-print(ra.average_rent())
-
-print(rc.contracts)
+# p1 = Property(1, 'London', 12.54, ['bath', 'shower', 'wi-fi', 'king-size bed'], 1000.49)
+# p2 = Property(2, 'New York', 46.31, ['shower', 'wi-fi', 'queen-size bed', "pc"], 1400)
+# o1 = Owner(1, 'Mister Business', '@millionaire')
+#
+# p1.get_status()
+# p1.calculate_cost(3)
+#
+# c1 = Contract(1, o1, p1, date(2025, 4, 1), date(2025, 4, 19), 5)
+#
+# # print(datetime.date.today())
+# print(c1.is_active())
+# c1.calculate_commission()
+# c1.get_owner()
+#
+# # rc testing
+#
+# rc.add_property(p1)
+# rc.add_property(h1)
+#
+#
+# # rc.remove_property(p1)
+#
+# ra = RentalAnalytics()
+# rc.get_properties()
+# ra.vacancy_rate()
+# print(ra.average_rent())
+#
+# print(rc.contracts)
 
