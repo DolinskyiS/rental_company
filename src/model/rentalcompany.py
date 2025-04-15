@@ -7,21 +7,6 @@ class RentalCompany:
         self.company_name = company_name
         self.properties_managed = []
         self.contracts = []
-    #     self._relations_setup_rc()
-    #
-    # def _relations_setup_rc(self):
-
-    #     self.owner.add_property(self.property)  # adding property to owner's property list
-    #     self.property.history.append(self)  # updating property history
-    #     # self.property.is_occupied = True # updating occupation status
-    #     if str(datetime.date.today()) >= self.start_date and str(datetime.date.today()) <= self.end_date:
-    #         self.property.is_occupied = True
-    #     else:
-    #         self.property.is_occupied = False
-
-    # def contracts_inlining(self):
-    #     for property in self.properties_managed:
-    #         if
 
     def get_properties(self):
         prop_list = []
@@ -141,6 +126,11 @@ class RentalAnalytics:
             sum += prop.price
         print(f'The average rent is {(sum / len(rc.get_properties())):.2f}')
         return round(sum / len(rc.get_properties()), 2)
+
+    # def revenue_analytics(self):
+    #     sum = 0
+    #     for cont in rc.contracts:
+
 
 
 # testing
