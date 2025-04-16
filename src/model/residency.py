@@ -1,4 +1,5 @@
-from src.model.property import Property
+from src.model.property import Property, p1
+from src.model.events import Event, EventLogYes
 import uuid
 from datetime import date
 
@@ -33,6 +34,24 @@ class RentalApplication:
 
     def approve(self):
        pass
+
+class Complaint:
+    def __init__(self, resident: Resident, property: Property, description: str):
+        self.complaint_id = int(uuid.uuid4())
+        self.resident = resident
+        self.property = property
+        self.description = description
+        self.status = "Not Resolved"
+        self._auto()
+
+    def _auto(self):
+        Event(f'New complaint has been filed with the following ID: {self.complaint_id}')
+    #     # print('complainiiing')
+
+    def resolve(self):
+        self.status = "Resolved"
+        print('Complaint has been successfully resolved')
+        return True
 
 
 class LeaseAgreement:
@@ -86,6 +105,11 @@ class Payment:
         self.date = date.today()
         self.status = str
 
+        self._auto()
+
+    def _auto(self):
+        Event(f'New payment has been made with the following ID : {self.payment_id}')
+
     # def is_late(self):
     #     if self.date
 
@@ -102,7 +126,15 @@ class LatePayment(Payment):
 
 
 
-r1 = Resident("Andriy", "phone_number: +431231231232")
+# r1 = Resident("Andriy", "phone_number: +431231231232")
+# #
+# la1 = LeaseAgreement(p1, r1, date(2025,4,1), date(2026,4,1) )
 #
-# la1 = LeaseAgreement(1, p1, r1, date(2025,4,1), date(2026,4,1) )
+# payment1 = Payment(la1)
+#
+# complaint1 = Complaint(r1, p1, 'Faulty Fridge')
+#
+# EventLogYes.read_all_messages()
+
+
 # print(r1.get_active_lease())

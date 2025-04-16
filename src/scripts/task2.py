@@ -2,7 +2,7 @@
 
 
 def identify_late_payments():
-    # Your code goes here.
+
     pass
 
 

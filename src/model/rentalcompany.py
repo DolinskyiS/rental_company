@@ -43,7 +43,7 @@ import datetime
 class Contract:
 
     def __init__(self, owner: Owner, prop: Property, start_date: date, end_date: date, commission_rate: float):
-        self.contract_id = uuid.uuid4()
+        self.contract_id = int(uuid.uuid4())
         self.owner = owner
         self.property = prop
         self.start_date = start_date
@@ -52,12 +52,15 @@ class Contract:
         # make everything inline
         self._relations_setup()
 
+    # def __str__(self):
+    #     return (f"Contract ID: {self.contract_id}, "
+    #             f"Owner: {self.owner.name}, "
+    #             f"Property ID: {self.property.property_id}, "
+    #             f"Start: {self.start_date}, End: {self.end_date}, "
+    #             f"Commission Rate: {self.commission_rate}%")
+    #
     def __str__(self):
-        return (f"Contract ID: {self.contract_id}, "
-                f"Owner: {self.owner.name}, "
-                f"Property ID: {self.property.property_id}, "
-                f"Start: {self.start_date}, End: {self.end_date}, "
-                f"Commission Rate: {self.commission_rate}%")
+        return (f"{self.contract_id}")
 
     def __repr__(self):
         return self.__str__()
@@ -71,6 +74,7 @@ class Contract:
         else:
             self.property.is_occupied = False
         rc.contracts.append(self)
+        rc.properties_managed.append(self.property)
 
 
     def is_active(self):

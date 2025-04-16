@@ -2,14 +2,18 @@ from src.model.rentalcompany import Contract, RentalAnalytics, RentalCompany, rc
 from src.model.property import Property, Owner
 from src.model.property_attributes import UtilityProvider, TaxRecord, House, Apartment
 from src.model.residency import Resident, RentalApplication, LeaseAgreement, TransactionHistory, Payment, LatePayment
+from src.model.events import Event, EventLogYes
 from datetime import date
 
-def test_rental_company():
-    company = RentalCompany("Test Company")
-    assert company.company_name == "Test Company"
+# def test_rental_company():
+    # company = RentalCompany("Test Company")
+    # assert company.company_name == "Test Company"
     # assert isinstance(company, RentalCompany)
 
     # assert False, "This was just an example. Add more tests here"
+
+def test_events():
+    assert EventLogYes.read_all_messages() == str
 
 
 
@@ -77,3 +81,5 @@ def test_rental_company():
 
     la1 = LeaseAgreement(p1, r1, date(2025, 4, 1), date(2026, 4, 1))
     print(r1.get_active_lease())
+
+    # EventLogYes.read_all_messages()
