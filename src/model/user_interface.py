@@ -82,7 +82,6 @@ class Notification:
 
 
 
-
 u1 = User('Sviatik', 'Turbo', 'Renter')
 # u2 = User('Sviatik', 'Turbo', 'Renter')
 

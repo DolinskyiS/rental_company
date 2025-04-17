@@ -39,10 +39,10 @@ class Owner:
 
 
 class Property:
-    def __init__(self, address: str, size: float, facilities: list, price: float):
+    def __init__(self, city: str, country: str, size: float, facilities: list, price: float):
         id_prop = int(uuid.uuid4())
         self.property_id = id_prop
-        self.address = address
+        self.address = f"{city}, {country}"
         self.size = size
         self.facilities = facilities
         self.price = price
@@ -139,7 +139,7 @@ class Renovation:
 
 
 # testing
-p1 = Property('London', 12.54, ['bath', 'shower', 'wi-fi', 'king-size bed'], 1000.49)
+p1 = Property('London', "England", 12.54, ['bath', 'shower', 'wi-fi', 'king-size bed'], 1000.49)
 mr = MaintenanceRequest(p1)
 
 # p2 = Property('New York', 46.31, ['shower', 'wi-fi', 'queen-size bed', "pc"], 1400)

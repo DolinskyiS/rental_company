@@ -1,6 +1,11 @@
+from platform import architecture
+
 from src.model.property import Property, Owner
+from src.model.residency import transaction_history
 import uuid
 from datetime import date
+from geopy.geocoders import Nominatim
+from geopy.distance import geodesic
 
 class RentalCompany:
     def __init__(self, company_name: str):
@@ -133,36 +138,127 @@ class RentalAnalytics:
     #     sum = 0
     #     for cont in rc.contracts:
 
+class MonthlyReport:
+    def __init__(self):
+        self.report_id = int(uuid.uuid4())
+        self.month = date.today().month
+        self.year = date.today().year
+        self.vacancy_percentage = self.func_for_vp()
+        self.income = self.calculate_income()
+        self.loss_due_to_vacancy = self.calc_ldtv()
+
+    def free_occup_props(self):
+        occup = []
+        free = []
+        for prop in rc.get_properties():
+            if prop.is_occupied:
+                occup += prop
+            else:
+                free += prop
+            return free
+
+    def func_for_vp(self):
+        free = self.free_occup_props()
+        if len(rc.get_properties()) > 0:
+            print(f'The vacancy percentage is ')
+            return round(len(free) * 100 / len(rc.get_properties()), 2)
+        else:
+            print("Rental company manages 0 properties")
+            return 100
+
+    def calculate_income(self):
+        total_revenue_of_month = 0
+        for payment in transaction_history:
+            if payment.date.month == self.month:
+                total_revenue_of_month += payment.income
+        return total_revenue_of_month
+
+    def calc_ldtv(self):
+        loss = 0
+        for p in self.free_occup_props():
+            loss += p.price
+        return loss
+
+    def generate_report(self):
+        report = {
+            "report_id": self.report_id,
+            "month": self.month,
+            "year": self.year,
+            "vacancy_percentage": self.vacancy_percentage,
+            "income": self.income,
+            "loss_due_to_vacancy": self.loss_due_to_vacancy,
+        }
+
+        return report
+
+class PropertySearch:
+    def search_by_location(self, city: str, country: str):
+        properties = []
+        location = f"{city}, {country}"
+        for prop in rc.get_properties():
+            if prop.address.lower() == location.lower():
+                properties.append(prop)
+        if len(properties) > 0:
+            print(f'Here are all the locations in {location}: {properties}')
+        else:
+            print(f"No properties by location {location} found")
+        return properties
+
+    def search_by_price(self, price_from: float, price_to: float):
+        properties = []
+        for prop in rc.get_properties():
+            if price_from <= prop.price <= price_to:
+                properties.append(prop)
+        if len(properties) > 0:
+            print(f'Here are all the properties in the price range from ${price_from} to ${price_to}: {properties}')
+        else:
+            print(f'No properties range from ${price_from} to ${price_to} were found')
+        return properties
+
+    def search_by_availability(self):
+        properties = []
+        for prop in rc.get_properties():
+            if not prop.is_occupied:
+                properties.append(prop)
+        if len(properties) > 0:
+            print(f"Here is the list of all currently available properties: {properties}")
+        else:
+            print(f"There are no currently available properties")
+        return properties
+
+Property_Search = PropertySearch()
+
+class Navigation:
+    def get_nearest_available_property(self, city: str, country: str):
+        available_properties = Property_Search.search_by_availability()
+        location = f"{city}, {country}"
+        locator = Nominatim(user_agent="rental_company_assignment")
+
+        location_geo = locator.geocode(location)
+        if location_geo is None:
+            print(f"No location found for {location}")
+
+        starting_point = (location_geo.latitude, location_geo.longitude)
+
+        def getting_prop_lat_and_long(prompt: Property):
+            address = locator.geocode(prompt.address)
+            prop_address = (address.latitude, address.longitude)
+            return prop_address
+
+        if len(available_properties) > 0:
+            print('here')
+            nearest_available_property  = min(available_properties,
+                                              key=lambda p: geodesic(starting_point, getting_prop_lat_and_long(p))) # lambda function for comparing to locations
+            print(f"Here is the nearest available property: {nearest_available_property.address}")
+            return nearest_available_property.address
+        else:
+            # print('yo')
+            return None
 
 
-# testing
-# property.py testing
-# p1 = Property(1, 'London', 12.54, ['bath', 'shower', 'wi-fi', 'king-size bed'], 1000.49)
-# p2 = Property(2, 'New York', 46.31, ['shower', 'wi-fi', 'queen-size bed', "pc"], 1400)
-# o1 = Owner(1, 'Mister Business', '@millionaire')
-#
-# p1.get_status()
-# p1.calculate_cost(3)
-#
-# c1 = Contract(1, o1, p1, date(2025, 4, 1), date(2025, 4, 19), 5)
-#
-# # print(datetime.date.today())
-# print(c1.is_active())
-# c1.calculate_commission()
-# c1.get_owner()
-#
-# # rc testing
-#
-# rc.add_property(p1)
-# rc.add_property(h1)
-#
-#
-# # rc.remove_property(p1)
-#
-# ra = RentalAnalytics()
-# rc.get_properties()
-# ra.vacancy_rate()
-# print(ra.average_rent())
-#
-# print(rc.contracts)
+
+
+
+
+
 

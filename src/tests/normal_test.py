@@ -1,4 +1,4 @@
-from src.model.rentalcompany import Contract, RentalAnalytics, RentalCompany, rc
+from src.model.rentalcompany import Contract, RentalAnalytics, RentalCompany, rc, MonthlyReport, PropertySearch, Navigation
 from src.model.property import Property, Owner, MaintenanceRequest, mr, Review
 from src.model.property_attributes import UtilityProvider, TaxRecord, House, Apartment
 from src.model.residency import Resident, RentalApplication, LeaseAgreement, TransactionHistory, transaction_history, Payment, LatePayment, Complaint
@@ -8,8 +8,8 @@ from datetime import date
 
 
 
-p1 = Property('London', 12.54, ['bath', 'shower', 'wi-fi', 'king-size bed'], 1000.49)
-p2 = Property('New York', 46.31, ['shower', 'wi-fi', 'queen-size bed', "pc"], 1400)
+p1 = Property('London', 'England', 12.54, ['bath', 'shower', 'wi-fi', 'king-size bed'], 1000.49)
+p2 = Property('New York', 'USA', 46.31, ['shower', 'wi-fi', 'queen-size bed', "pc"], 1400)
 o1 = Owner('Mister Business', '@millionaire')
 
 # p1.get_status()
@@ -23,7 +23,9 @@ h1 = House(
     num_bedrooms=2,
     num_bathrooms=3,
     has_garden=False,
-    address='Los Angeles',
+    # address='Los Angeles, USA',
+    city='Los Angeles',
+    country='USA',
     size=3000,
     facilities=['bath', 'shower', 'wi-fi'],
     price=15000
@@ -33,7 +35,9 @@ a1 = Apartment(
     floor_number=23,
     has_elevator=True,
     has_balcony=True,
-    address='Miami',
+    # address='Miami, USA',
+    city='Miami',
+    country='USA',
     size=700,
     facilities=['bath', 'shower', 'wi-fi', 'queen-size bed', 'cleaning'],
     price=3500
@@ -51,8 +55,8 @@ c1 = Contract(o1, p1, date(2025, 4, 1), date(2025, 4, 19), 5)
 # c1.get_owner()
 #
 # # rc testing
-# rc.add_property(p1)
-# rc.add_property(h1)
+rc.add_property(p1)
+rc.add_property(h1)
 #
 # # rc.remove_property(p1)
 
@@ -74,6 +78,14 @@ payment1 = Payment(la1)
 payment2 = LatePayment(la1)
 payment3 = LatePayment(la2)
 transaction_history.get_total_payments()
+
+ps = PropertySearch()
+# ps.search_by_location("Los Angeles", "USA")
+# ps.search_by_availability()
+
+nav = Navigation()
+nav.get_nearest_available_property('Vienna', 'Austria')
+
 
 # complaint1 = Complaint(r1, p1, 'Faulty Fridge')
 #
