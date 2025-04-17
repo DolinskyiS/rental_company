@@ -90,37 +90,60 @@ class LeaseAgreement:
 
 class TransactionHistory:
     def __init__(self):
-        self.transactions: list["Payment"] = []
+        self.transactions = []
 
+    def add_transaction(self, transaction):
+        self.transactions.append(transaction)
+        print('trans appended')
 
     def get_total_payments(self):
-        pass
+        sum = 0
+        print('here')
+        for payment in self.transactions:
+            sum += payment.amount
+        print(f"Total payments: {sum}")
+        return sum
 
+transaction_history = TransactionHistory()
 
 class Payment:
     def __init__(self, lease: LeaseAgreement):
         self.payment_id = int(uuid.uuid4())
         self.lease = lease
-        self.amount = lease.rent_amount
+        self.amount: float = lease.rent_amount
         self.date = date.today()
-        self.status = str
+        self.status = 'Pending'
 
         self._auto()
 
+    def is_late(self) -> bool:
+        rent_day = self.lease.start_date.replace(year=self.date.year, month=self.date.month) # replacing year and month in order to calculate the payment deadline
+        return self.date > rent_day
+
     def _auto(self):
-        Event(f'New payment has been made with the following ID : {self.payment_id}')
-
-    # def is_late(self):
-    #     if self.date
-
+        # Event(f'New payment has been made with the following ID : {self.payment_id}')
+        global transaction_history
+        transaction_history.add_transaction(self)
 
 class LatePayment(Payment):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.penalty_fee = round(self.amount * 0.2, 2)
+    def __init__(self, lease: LeaseAgreement):
+        super().__init__(lease)
+        if self.is_late():
+            self.penalty_fee = round(self.amount * 0.2, 2)
+            self.amount = round(self.amount + self.penalty_fee, 2)
+            self.status = 'Late Payment'
+            Event(f'Late payment has been made with the following ID : {self.payment_id}. Lease ID: {self.lease.lease_id}. A penalty fee of {self.penalty_fee} has been applied')
+
+        else:
+            self.penalty_fee = 0.0
+            self.status = 'Paid on time'
+            Event(f'Payment has been made with the following ID : {self.payment_id}. Lease ID: {self.lease.lease_id}. No additional fees')
+
+
+
 
     def calculate_penalty(self):
-        print(f"If you will be late on your payment, your fee would sum up to: {self.penalty_fee}")
+        print(f"Your penalty fee is ${self.penalty_fee}")
         return self.penalty_fee
 
 
