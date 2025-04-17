@@ -20,7 +20,10 @@ class Resident:
 
 
     def pay_rent(self, amount: float):
-        required_payment_lease = self.get_active_lease()
+        needed_lease = self.get_active_lease()
+        print("Payment has been successfully made")
+        LatePayment(needed_lease, amount)
+
 
 
 
@@ -30,10 +33,13 @@ class RentalApplication:
         self.application_id = int(uuid.uuid4())
         self.applicant = applicant
         self.property = property
-        self.status = str
+        self.status = "Not Decided"
 
     def approve(self):
-       pass
+        self.status = "Approved"
+
+    def reject(self):
+        self.status = "Rejected"
 
 class Complaint:
     def __init__(self, resident: Resident, property: Property, description: str):
@@ -79,7 +85,6 @@ class LeaseAgreement:
         self.resident.lease_agreements.append(self) #appending lease agreement auto
 
 
-
     def is_active(self) -> bool:
         today = date.today()
         return self.start_date <= today <= self.end_date
@@ -107,57 +112,47 @@ class TransactionHistory:
 transaction_history = TransactionHistory()
 
 class Payment:
-    def __init__(self, lease: LeaseAgreement):
+    def __init__(self, lease: LeaseAgreement, amount: float):
         self.payment_id = int(uuid.uuid4())
         self.lease = lease
-        self.amount: float = lease.rent_amount
+        self.amount = amount # lease.rent_amount
         self.date = date.today()
         self.status = 'Pending'
 
-        self._auto()
+
 
     def is_late(self) -> bool:
         rent_day = self.lease.start_date.replace(year=self.date.year, month=self.date.month) # replacing year and month in order to calculate the payment deadline
         return self.date > rent_day
 
-    def _auto(self):
-        # Event(f'New payment has been made with the following ID : {self.payment_id}')
-        global transaction_history
-        transaction_history.add_transaction(self)
+
 
 class LatePayment(Payment):
-    def __init__(self, lease: LeaseAgreement):
-        super().__init__(lease)
+    def __init__(self, lease: LeaseAgreement, amount: float):
+        super().__init__(lease, amount)
+
         if self.is_late():
             self.penalty_fee = round(self.amount * 0.2, 2)
-            self.amount = round(self.amount + self.penalty_fee, 2)
+            self.lease.rent_amount = round(self.amount + self.penalty_fee, 2)
             self.status = 'Late Payment'
             Event(f'Late payment has been made with the following ID : {self.payment_id}. Lease ID: {self.lease.lease_id}. A penalty fee of {self.penalty_fee} has been applied')
+
 
         else:
             self.penalty_fee = 0.0
             self.status = 'Paid on time'
             Event(f'Payment has been made with the following ID : {self.payment_id}. Lease ID: {self.lease.lease_id}. No additional fees')
 
-
+        # Event(f'New payment has been made with the following ID : {self.payment_id}')
+        global transaction_history
+        transaction_history.add_transaction(self)
+        if self.amount < self.lease.rent_amount:
+            self.status = "Unfinished Payment"
+            owed = self.lease.rent_amount - self.amount
+            Event(f'Insufficient payment has been made with the following ID : {self.payment_id}. Lease ID: {self.lease.lease_id}. Still ${owed} needed')
+            print(f"Insufficient payment. You still owe: {owed}")
 
 
     def calculate_penalty(self):
         print(f"Your penalty fee is ${self.penalty_fee}")
         return self.penalty_fee
-
-
-
-
-# r1 = Resident("Andriy", "phone_number: +431231231232")
-# #
-# la1 = LeaseAgreement(p1, r1, date(2025,4,1), date(2026,4,1) )
-#
-# payment1 = Payment(la1)
-#
-# complaint1 = Complaint(r1, p1, 'Faulty Fridge')
-#
-# EventLogYes.read_all_messages()
-
-
-# print(r1.get_active_lease())

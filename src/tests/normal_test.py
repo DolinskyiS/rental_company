@@ -74,17 +74,21 @@ la1 = LeaseAgreement(p1, r1, date(2025, 4, 1), date(2026, 4, 1))
 la2 = LeaseAgreement(h1, r2, date(2025, 3, 20), date(2026, 3, 20))
 # print(r1.get_active_lease())
 
-payment1 = Payment(la1)
-payment2 = LatePayment(la1)
-payment3 = LatePayment(la2)
+# payment1 = Payment(la1, 123123)
+# payment2 = LatePayment(la1, 999)
+# payment3 = LatePayment(la2, 293019)
 transaction_history.get_total_payments()
 
 ps = PropertySearch()
 # ps.search_by_location("Los Angeles", "USA")
 # ps.search_by_availability()
 
-nav = Navigation()
-nav.get_nearest_available_property('Vienna', 'Austria')
+# nav = Navigation()
+# nav.get_nearest_available_property('Vienna', 'Austria')
+
+transaction_history.get_total_payments()
+r1.pay_rent(1000.0)
+transaction_history.get_total_payments()
 
 
 # complaint1 = Complaint(r1, p1, 'Faulty Fridge')
