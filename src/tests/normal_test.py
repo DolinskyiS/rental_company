@@ -3,6 +3,9 @@ from src.model.property import Property, Owner, MaintenanceRequest, mr, Review
 from src.model.property_attributes import UtilityProvider, TaxRecord, House, Apartment
 from src.model.residency import Resident, RentalApplication, LeaseAgreement, TransactionHistory, transaction_history, Payment, LatePayment, Complaint
 from src.model.events import Event, EventLogYes
+from src.model.user_interface import User, Admin, PropertyManager, Renter, Notification
+from src.scripts.task2 import identify_late_payments, calculate_total_revenue
+from src.scripts.task6 import notificator
 from datetime import date
 
 
@@ -90,6 +93,28 @@ transaction_history.get_total_payments()
 r1.pay_rent(1000.0)
 transaction_history.get_total_payments()
 
+identify_late_payments()
+calculate_total_revenue()
+
+renter1 = Renter(
+    username="Sviatik",
+    password_hash="Turbo",
+    role="Renter"
+)
+
+# print(renter1.resident)
+renter1.become_resident(r1, 'Turbo')
+# print(renter1.resident)
+
+renter1.check_notifications('Turbo')
+renter1.view_lease_details('Turbo')
+
+message1 = Notification('Like your pants', renter1, False)
+message1.send()
+
+renter1.view_lease_details('Turbo')
+
+notificator()
 
 # complaint1 = Complaint(r1, p1, 'Faulty Fridge')
 #

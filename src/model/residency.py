@@ -90,7 +90,8 @@ class LeaseAgreement:
         return self.start_date <= today <= self.end_date
 
     def renew_lease(self, preferred_end_date):
-        pass
+        self.end_date = preferred_end_date
+        print("Lease has been renewed")
 
 
 class TransactionHistory:
