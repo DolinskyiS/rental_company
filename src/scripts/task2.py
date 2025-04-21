@@ -1,4 +1,4 @@
-from src.model.residency import Payment, LatePayment, transaction_history
+from src.model.residency import transaction_history
 
 def identify_late_payments():
     all_late_payments = []

@@ -1,7 +1,7 @@
 import uuid
-from src.model.property import Property
-from src.model.residency import Resident
-from src.model.rentalcompany import RentalCompany, rc
+from src.model.property import Property, MaintenanceRequest, Review, Renovation
+from src.model.residency import Resident, Complaint
+from src.model.rentalcompany import rc
 
 users = []
 
@@ -75,9 +75,32 @@ class PropertyManager(User):
         super().__init__(**kwargs)
         self.properties_managed = []
 
+    def manage_maintenence_request(self, mr: MaintenanceRequest, what_to_do: str):
+        if what_to_do == 'approve':
+            mr.approve()
+        elif what_to_do == 'reject':
+            mr.reject()
+        elif what_to_do == 'resolve':
+            print("In order to resolve a Maint. Request you will need to create a Renovation and use a function: resolve_maintenence_request")
+        else:
+            print('Unknown maintenance request')
+
+    def resolve_maintenence_request(self, mr: MaintenanceRequest, renovation: Renovation):
+        if mr.status == 'approved':
+            mr.resolve(renovation)
+        elif mr.status == 'rejected':
+            print('you cannot resolve rejected Maintenance Request.')
+        elif mr.status == 'pending':
+            print("You cannot resolve a pending Maintenance Request. You need to approve it first.")
+
+
+    def resolve_a_complaint(self, complaint: Complaint):
+        complaint.resolve()
+
     def assign_property(self, p: Property):
         self.properties_managed.append(p)
         print('Property has been successfully assigned')
+
 
 
 class Renter(User):
@@ -86,6 +109,7 @@ class Renter(User):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.resident = None
+        self.reviews = [] # so that one renter wont rate twice on the same property
         Renter.all_renters.append(self)
 
     def become_resident(self, resident: Resident, psw: str):
@@ -96,6 +120,25 @@ class Renter(User):
     def view_lease_details(self, psw: str):
         if self.authenticate(psw):
             print(self.resident.get_active_lease())
+
+    def leave_a_review(self, psw: str, review: Review):
+        if self.authenticate(psw):
+            if len(self.reviews) > 0:
+                for rev in self.reviews:
+                    if rev.property == review.property:
+                        return print("You can't rate one property twice")
+            self.reviews.append(review)
+            return print("You have successfully rated a property")
+
+
+
+
+            #     self.rated = True
+            #     print('You have successfully left a review')
+            # else:
+            #     print('You have already left a review once')
+
+
 
 
 class Notification:

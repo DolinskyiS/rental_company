@@ -1,5 +1,5 @@
-from src.model.property import Property, p1
-from src.model.events import Event, EventLogYes
+from src.model.property import Property
+from src.model.events import Event
 import uuid
 from datetime import date
 
@@ -12,7 +12,7 @@ class Resident:
 
     def get_active_lease(self) -> "LeaseAgreement | None":
         for lease in self.lease_agreements:
-            if lease.is_active:
+            if lease.is_active():
                 print(f"Here is your active lease: {lease.lease_id}")
                 return lease
         print("No active lease")
@@ -87,7 +87,9 @@ class LeaseAgreement:
 
     def is_active(self) -> bool:
         today = date.today()
-        return self.start_date <= today <= self.end_date
+        if self.start_date <= today <= self.end_date:
+            return True
+        return False
 
     def renew_lease(self, preferred_end_date):
         self.end_date = preferred_end_date
@@ -124,8 +126,11 @@ class Payment:
 
     def is_late(self) -> bool:
         rent_day = self.lease.start_date.replace(year=self.date.year, month=self.date.month) # replacing year and month in order to calculate the payment deadline
-        return self.date > rent_day
+        from datetime import timedelta
 
+        grace_period_end = rent_day + timedelta(days=5)
+
+        return self.date > grace_period_end
 
 
 class LatePayment(Payment):

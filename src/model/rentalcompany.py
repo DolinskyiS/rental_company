@@ -1,5 +1,3 @@
-from platform import architecture
-
 from src.model.property import Property, Owner
 from src.model.residency import transaction_history
 import uuid
@@ -24,7 +22,7 @@ class RentalCompany:
         if p not in self.properties_managed:
             self.properties_managed.append(p)
             print(f'The property with ID: {p.property_id} has been added to RentalCompany {self.company_name}')
-        else:
+        elif p in self.properties_managed:
             print(f'The property with ID: {p.property_id} already exists in RentalCompany {self.company_name}')
 
     def remove_property(self, p: Property):
@@ -57,13 +55,6 @@ class Contract:
         # make everything inline
         self._relations_setup()
 
-    # def __str__(self):
-    #     return (f"Contract ID: {self.contract_id}, "
-    #             f"Owner: {self.owner.name}, "
-    #             f"Property ID: {self.property.property_id}, "
-    #             f"Start: {self.start_date}, End: {self.end_date}, "
-    #             f"Commission Rate: {self.commission_rate}%")
-    #
     def __str__(self):
         return (f"{self.contract_id}")
 
@@ -134,9 +125,6 @@ class RentalAnalytics:
         print(f'The average rent is {(sum / len(rc.get_properties())):.2f}')
         return round(sum / len(rc.get_properties()), 2)
 
-    # def revenue_analytics(self):
-    #     sum = 0
-    #     for cont in rc.contracts:
 
 class MonthlyReport:
     def __init__(self):
@@ -148,29 +136,36 @@ class MonthlyReport:
         self.loss_due_to_vacancy = self.calc_ldtv()
 
     def free_occup_props(self):
-        occup = []
-        free = []
+        vacant_properties = []
         for prop in rc.get_properties():
-            if prop.is_occupied:
-                occup += prop
-            else:
-                free += prop
-            return free
+            if not prop.is_occupied:
+                vacant_properties.append(prop)
+        return vacant_properties
 
     def func_for_vp(self):
-        free = self.free_occup_props()
-        if len(rc.get_properties()) > 0:
-            print(f'The vacancy percentage is ')
-            return round(len(free) * 100 / len(rc.get_properties()), 2)
-        else:
-            print("Rental company manages 0 properties")
-            return 100
+        vacant_count = len(self.free_occup_props())
+        total_properties = len(rc.get_properties())
+
+        if total_properties == 0:
+            return 100.0
+
+        vacancy_percent = (vacant_count / total_properties) * 100
+        return round(vacancy_percent, 2)
+
+    # def func_for_vp(self):
+    #     free = self.free_occup_props()
+    #     if len(rc.get_properties()) > 0:
+    #         print(f'The vacancy percentage is ')
+    #         return round(len(free) * 100 / len(rc.get_properties()), 2)
+    #     else:
+    #         print("Rental company manages 0 properties")
+    #         return 100
 
     def calculate_income(self):
         total_revenue_of_month = 0
-        for payment in transaction_history:
+        for payment in transaction_history.transactions:
             if payment.date.month == self.month:
-                total_revenue_of_month += payment.income
+                total_revenue_of_month += payment.amount
         return total_revenue_of_month
 
     def calc_ldtv(self):
@@ -246,7 +241,7 @@ class Navigation:
             return prop_address
 
         if len(available_properties) > 0:
-            print('here')
+            # print('here')
             nearest_available_property  = min(available_properties,
                                               key=lambda p: geodesic(starting_point, getting_prop_lat_and_long(p))) # lambda function for comparing to locations
             print(f"Here is the nearest available property: {nearest_available_property.address}")

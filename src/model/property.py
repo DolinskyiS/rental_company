@@ -48,9 +48,8 @@ class Property:
         self.price = price
         self.history = []
         self.is_occupied = False
-        self.utility_provider = []
-        self.utility_history = []
-        self.tax_history = []
+        self.ratings_history = []
+
 
     def __str__(self):
         return (f"{self.property_id}")
@@ -69,17 +68,33 @@ class Property:
         print(f"Your cost for property {self.property_id} for {months} month/s is ${(self.price * months):.2f}")
         return self.price * months
 
-    # #  setting utility provider
-    # def add_utility_provider(self, provider: UtilityProvider):
-    #     self.utility_provider.append(provider)
-    #
-    # # altering tax and utility histories
-    # def add_utility_payment(self, provider: UtilityProvider, payment):
-    #     self.utility_history.append((provider, payment))
+    # def add_tax_payment(self, payment):
+    #     self.tax_history.append(payment)
+    #     print('the payment has been successfully appended')
 
-    def add_tax_payment(self, payment):
-        self.tax_history.append(payment)
-        print('the payment has been successfully appended')
+renovation_history = []
+
+class Renovation:
+    def __init__(self, prop: Property, cost: int, comment: str):
+        self.renovation_id = int(uuid.uuid4())
+        self.property = prop
+        self.date = date.today()
+        self.cost = cost
+        self.comment = comment
+        self.history = renovation_history
+
+    def get_total_cost(self, p: Property):
+        total_cost = 0
+        for ren in self.history:
+            if ren.property == p:
+                total_cost += ren.cost
+                print(f"The cost of all renovations sums up to ${total_cost:.2f}. Property ID: {ren.property}")
+                return round(total_cost, 2)
+
+    def get_desc_of_renovations(self, p: Property): # as a renovation history
+        for ren in self.history:
+            if ren.property == p:
+                print(ren.comment)
 
 
 class MaintenanceRequest:
@@ -90,6 +105,15 @@ class MaintenanceRequest:
         self.status = "pending"
         self._auto()
 
+    def __str__(self):
+        return (f"ID: {self.request_id},"
+                f"Property: {self.property},"
+                f"Date: {self.request_date},"
+                f"Status: {self.status}")
+
+    def __repr__(self):
+        return self.__str__()
+
     def _auto(self):
         Event(f"Maintenance request has been made with the following ID: {self.request_id}")
 
@@ -97,11 +121,15 @@ class MaintenanceRequest:
         self.status = "approved"
         print("The property maintenance request has been approved")
 
-    def resolve(self):
+    def reject(self):
+        self.status = "rejected"
+        print("The property maintenance request has been rejected")
+
+    def resolve(self, renovation: Renovation):
         self.status = "resolved"
+        renovation_history.append(renovation)
         print("The property maintenance request has been resolved")
 
-ratings = []
 
 class Review:
     def __init__(self, prop: Property, rating: int, comment: str):
@@ -113,11 +141,11 @@ class Review:
 
     def _auto(self):
         Event(f"Review has been made with the following ID: {self.review_id}")
-        ratings.append((self.property, self.rating))
+        self.property.ratings_history.append((self.property, self.rating))
 
     def get_average_rating(self, prop: Property):
         needed_rating = []
-        for rating in ratings:
+        for rating in self.property.ratings_history:
             if int(rating[0].property_id) == int(prop.property_id):
                 needed_rating.append(rating[1])
         # return round(sum(needed_rating) / len(needed_rating), 2)
@@ -128,13 +156,6 @@ class Review:
             print("No rating for this property")
             return 0
 
-class Renovation:
-    def __init__(self, prop: Property, cost: int, comment: str):
-        self.renovation_id = int(uuid.uuid4())
-        self.property = prop
-        self.date = date.today()
-        self.cost = cost
-        self.comment = comment
 
 
 

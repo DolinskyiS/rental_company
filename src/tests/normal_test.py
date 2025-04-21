@@ -9,6 +9,8 @@ from src.scripts.task6 import notificator
 from datetime import date
 
 
+### I used this file for testing on the fly
+
 
 
 p1 = Property('London', 'England', 12.54, ['bath', 'shower', 'wi-fi', 'king-size bed'], 1000.49)
@@ -134,3 +136,7 @@ notificator()
 
 # tuplee = (123, 'hello')
 # print(type(tuplee[0]))
+
+print(type(o1.properties_owned))
+print(o1.properties_owned)
+print(o1.properties_owned)
